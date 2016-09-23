@@ -4,6 +4,9 @@
 .iconHelp {
     background-image: url(./img/help-browser.png) !important;
 }
+.iconHelp2 {
+    background-image: url(./img/help-about.png) !important;
+}
 
 .iconGoogle {
     background-image: url(./img/google.png) !important;
@@ -17,7 +20,7 @@
 
 .x-form-field-wrap .project-php, .x-form-field-wrap .project-pear {
     top: 5px;
-    left: 5px;
+    left: 4px;
 }
 
 .project-php {
@@ -48,7 +51,63 @@
     float: left;
 }
 
-#fb-use-credentials {
-    cursor: pointer;
-    text-decoration:underline; 
+#auth-login img {
+    margin: 5px;
+    padding: 2px;
+    border: 2px solid transparent;
 }
+
+#auth-login img:hover {
+  opacity: 1 !important;
+}
+
+#login-form-project {
+    padding-left: 26px !important;
+}
+
+/* {{{ ElePHPants */
+
+#elephpants-images {
+    height: 75px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+#elephpants {
+    margin: auto;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.oauth-enable {
+    border: 2px solid #94b7e6 !important;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.oauth-disable {
+    opacity: 0.5;
+}
+
+
+#elephpants img {
+  opacity: 0.5;
+  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+}
+
+#elephpants:hover img {
+  opacity: 0.6;
+  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+}
+
+#elephpants img:hover,
+#elephpants img:focus {
+  opacity: 1;
+}
+/* }}} */

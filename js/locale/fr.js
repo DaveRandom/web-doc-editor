@@ -360,6 +360,7 @@ var i18n = new Array();
   i18n["Default language, if available"] = "Langage par défaut, si disponible";
   i18n["English"] = "Anglais";
   i18n["French"] = "Français";
+  i18n["Ukrainian"] = "Ukrainien";
   i18n["Russian"] = "Russe";
   i18n["Spanish"] = "Espagnole";
   i18n["Black"] = "Noir";
@@ -480,6 +481,7 @@ var i18n = new Array();
   i18n["Documentation"] = "Documentation";
   i18n["About"] = "À propos";
   i18n["Chat with us on IRC !"] = "Chattez avec nous sur IRC !";
+  i18n["Help"] = "Aide";
 
 
 // In file: ../../js/ui/component/VCSLogGrid.js
@@ -557,6 +559,7 @@ var i18n = new Array();
   i18n["Mode Xmlpure by Dror Ben-Gai"] = "Mode Xmlpure par Dror Ben-Gai";
   i18n["Web IRC Chat"] = "Web IRC Chat";
   i18n["Mibbit for donating their Premium IRC widget"] = "Mibbit pour leur don de leur widget IRC Premium";
+  i18n["Getting started with this editor:"] = "Commencer à utiliser cet éditeur :";
 
 
 // In file: ../../js/ui/component/NotInENGrid.js
@@ -659,7 +662,7 @@ var i18n = new Array();
   i18n["Warning"] = "Alerte";
   i18n["The editor have modified automatically the file {0} into UTF-8 encoding."] = "L'éditeur a modifié automatiquement le fichier {0} en UTF-8.";
   i18n["The file <b> {0}</b> contains some tab characters.<br>The editor have replace it with space characters."] = "Le fichier {0} contient des caractères de tabulation.<br>L'éditeur les a automatiquement remplacé par des espaces.";  
-  i18n["File modified by {0} (anonymous user) but you are an authenticated user, so you can modify it."] = "Fichier modifié par {0} (utilisateur anonyme) mais vu que vous êtes un utilisateur authentifié, vous pouvez le modifier.";
+  i18n["File modified by {0} but you are an authenticated user, so you can modify it."] = "Fichier modifié par {0} mais vu que vous êtes un utilisateur authentifié, vous pouvez le modifier.";
   i18n["File modified by {0}."] = "Fichier modifié par {0}.";
 
 

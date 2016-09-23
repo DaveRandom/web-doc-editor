@@ -108,9 +108,19 @@ ui.cmp._PortletInfo.typeRenderer = function(value, md, record)
             img = '';
             
             if( authService == 'google' ) {
-                img = '<img src="themes/img/google.png" style="vertical-align: middle;"> ';
+                img = '<img src="themes/img/auth_google.png" style="vertical-align: middle;"> ';
             } else if( authService == 'facebook' ) {
-                img = '<img src="themes/img/icon_facebook.png" style="vertical-align: middle;"> ';
+                img = '<img src="themes/img/auth_facebook.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'github' ) {
+                img = '<img src="themes/img/auth_github.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'stackoverflow' ) {
+                img = '<img src="themes/img/auth_stackoverflow.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'linkedin' ) {
+                img = '<img src="themes/img/auth_linkedin.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'instagram' ) {
+                img = '<img src="themes/img/auth_instagram.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'twitter' ) {
+                img = '<img src="themes/img/auth_twitter.png" style="vertical-align: middle;"> ';
             }
             
             return img + String.format(
@@ -201,7 +211,12 @@ ui.cmp._PortletInfo.grid = Ext.extend(Ext.grid.GridPanel,
     autoHeight       : true,
     store            : ui.cmp._PortletInfo.store,
     columns          : ui.cmp._PortletInfo.gridColumns,
-
+    listeners        : {
+        afterrender: function(p) {
+            p.ownerCt.setHeight(p.height + 60);
+            p.ownerCt.doLayout();
+        }
+    },
     initComponent : function()
     {
         Ext.apply(this, {

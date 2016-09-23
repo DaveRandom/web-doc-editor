@@ -131,8 +131,7 @@ Ext.override(Ext.form.Field, {
         this.initValue();
     }
       
-});
-// create namespace for plugins
+});// create namespace for plugins
 Ext.namespace('Ext.ux.plugins');
 
 /**
@@ -515,6 +514,7 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
 
         storeLang    : '',
         storeProject : '',
+        storeFlickr : '',
         email : Ext.util.Cookies.get("email"),
         authService: 'VCS',
         authServiceID: '',
@@ -563,6 +563,21 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                 })
             });
 
+            // Load Flickr elephpants
+            this.storeFlickr = new Ext.data.Store({
+                autoLoad: false,
+                proxy    : new Ext.data.HttpProxy({
+                    url : './do/getElephpants'
+                }),
+                reader : new Ext.data.JsonReader({
+                    root          : 'Items',
+                    fields        : [
+                        {name : 'img'},
+                        {name : 'link'}
+                    ]
+                })
+            });
+
             this.storeProject.on('load', function() {
                 this.drawForm();
             }, this);
@@ -578,6 +593,7 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
             Ext.getCmp('login-form-vcsLogin').setValue(name);
             Ext.getCmp('login-form-vcsLogin').disable();
             Ext.getCmp('login-form-vcsPasswd').disable();
+            Ext.getCmp('login-form-auth').setText('<img src="themes/img/auth_'+service+'.png" style="vertical-align: middle" /> <b>' + service.ucFirst() +'</b>', false);
             
             if( email ) {
                 Ext.getCmp('login-form-email').setValue(email);
@@ -593,8 +609,8 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
             if (!win) {
                 win = new Ext.Window({
                     layout      : 'border',
-                    width       : 380,
-                    height      : 270,
+                    width       : 440,
+                    height      : 300,
                     closable    : false,
                     closeAction : 'hide',
                     resizable   : false,
@@ -605,6 +621,15 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                         show: function(w) {
                             win.drawers.e.show();
                             win.drawers.e.setHeight(240);
+                        },
+                        afterrender: function(w) {
+                            
+                            if( auth && auth.service ) {
+                                
+                                PhDOE_loginPage.externalCredentials(auth.service, auth.login, auth.serviceID, auth.email);
+                                
+                            }
+                            
                         }
                     },
                     plugins     : [
@@ -621,68 +646,116 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                             side      : 'e',
                             animate   : true,
                             resizable : false,
-                            width     : 270,
-                            height    : 250,
-                            items: [{
-                                xtype:'panel',
-                                layout:'accordion',
-                                border: false,
-                                autoHeight: true,
-                                defaults: {
-                                    bodyStyle: 'padding:15px;'
-                                },
-                                layoutConfig: {
-                                    animate: true,
-                                    border: false,
-                                    height: 100
-                                },
-                                items: [{
-                                    title: 'Facebook',
-                                    id:'accordion-fb',
-                                    layout:'fit',
-                                    iconCls:'iconFacebook',
-                                    html: '<div id="facebook-box"></div><div id="facebook-box2"></div>',
-                                    listeners: {
-                                        resize: function(c) {
-                                            c.setHeight(100);
-                                        },
-                                        afterrender: function(c)
-                                        {
-                                            document.getElementById('facebook-box').innerHTML = FBInfo.libel;
-                                            // Is there already a connection ?
-                                            if( FBInfo.user )
-                                            {
-                                                document.getElementById('facebook-box2').innerHTML = '<a href="#" onclick="PhDOE_loginPage.externalCredentials(\'facebook\', \''+FBInfo.user.name+'\', \''+FBInfo.user.id+'\',  \''+FBInfo.user.email+'\')">Use this credentials</a>';
+                            width     : 210,
+                            height    : 200,
+                            bodyStyle : 'margin: 10px;',
+                            html      : '<div id="auth-login">'+
+                                        '<a href="?oauth=facebook" title="Facebook">'+
+                                            '<img id="auth-img-fb" src="themes/img/auth_facebook_40.png" class="" />'+
+                                        '</a> '+
+                                        '<a href="?oauth=github" title="Github">'+
+                                            '<img id="auth-img-github" src="themes/img/auth_github_40.png" class="" />'+
+                                        '</a>'+
+                                        '<a href="?oauth=google" title="Google">'+
+                                            '<img id="auth-img-google" src="themes/img/auth_google_40.png" />'+
+                                        '</a> '+
+                                        '<br/>'+
+                                        '<a href="?oauth=linkedin" title="Linkedin">'+
+                                            '<img id="auth-img-linkedin" src="themes/img/auth_linkedin_40.png" />'+
+                                        '</a>'+
+                                        '<a href="?oauth=stackoverflow" title="Stackoverflow">'+
+                                            '<img id="auth-img-stackoverflow" src="themes/img/auth_stackoverflow_40.png" />'+
+                                        '</a>'+
+                                        '<a href="?oauth=instagram" title="Instagram">'+
+                                            '<img id="auth-img-instagram" src="themes/img/auth_instagram_40.png" />'+
+                                        '</a>'+
+                                        '<br/>'+
+                                        '<a href="?oauth=twitter" title="Twitter">'+
+                                            '<img id="auth-img-twitter" src="themes/img/auth_twitter_40.png" />'+
+                                        '</a>'+
+                                        '</div>',
+                            listeners: {
+                                    afterrender: function() {
+                                        
+                                        if( auth.service ) {
+                                        
+                                            switch(auth.service) {
+                                                case "facebook" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-enable');
+                                                    Ext.get('auth-img-github').addClass('oauth-disable');
+                                                    Ext.get('auth-img-google').addClass('oauth-disable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-disable');
+                                                    break;
+                                                case "github" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-disable');
+                                                    Ext.get('auth-img-github').addClass('oauth-enable');
+                                                    Ext.get('auth-img-google').addClass('oauth-disable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-disable');
+                                                    break;
+                                                case "google" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-disable');
+                                                    Ext.get('auth-img-github').addClass('oauth-disable');
+                                                    Ext.get('auth-img-google').addClass('oauth-enable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-disable');
+                                                    break;
+                                                case "linkedin" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-disable');
+                                                    Ext.get('auth-img-github').addClass('oauth-disable');
+                                                    Ext.get('auth-img-google').addClass('oauth-disable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-enable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-disable');
+                                                    break;
+                                                case "stackoverflow" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-disable');
+                                                    Ext.get('auth-img-github').addClass('oauth-disable');
+                                                    Ext.get('auth-img-google').addClass('oauth-disable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-enable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-disable');
+                                                    break;
+                                                case "instagram" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-disable');
+                                                    Ext.get('auth-img-github').addClass('oauth-disable');
+                                                    Ext.get('auth-img-google').addClass('oauth-disable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-enable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-disable');
+                                                    break;
+                                                case "twitter" :
+                                                    Ext.get('auth-img-fb').addClass('oauth-disable');
+                                                    Ext.get('auth-img-github').addClass('oauth-disable');
+                                                    Ext.get('auth-img-google').addClass('oauth-disable');
+                                                    Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                                    Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                                    Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                                    Ext.get('auth-img-twitter').addClass('oauth-enable');
+                                                    break;
                                             }
-                                            
-
+                                        
+                                        } else {
+                                            Ext.get('auth-img-fb').addClass('oauth-disable');
+                                            Ext.get('auth-img-github').addClass('oauth-disable');
+                                            Ext.get('auth-img-google').addClass('oauth-disable');
+                                            Ext.get('auth-img-linkedin').addClass('oauth-disable');
+                                            Ext.get('auth-img-stackoverflow').addClass('oauth-disable');
+                                            Ext.get('auth-img-instagram').addClass('oauth-disable');
+                                            Ext.get('auth-img-twitter').addClass('oauth-disable');
                                         }
                                     }
-                                },{
-                                    scope: this,
-                                    title: 'Google',
-                                    iconCls:'iconGoogle',
-                                    id:'accordion-google',
-                                    html: '<div id="google-box"></div><div id="google-box2"></div>',
-                                    listeners: {
-                                        resize: function(c)
-                                        {
-                                            c.setHeight(100);
-                                        },
-                                        afterrender: function(cmp)
-                                        {
-                                            document.getElementById('google-box').innerHTML = googleInfo.libel;
-                                            // Is there already a connection ?
-                                            if( googleInfo.user )
-                                            {
-                                                //this.scope.externalCredentials('google', googleInfo.user.name, googleInfo.user.id, googleInfo.user.email);
-                                                document.getElementById('google-box2').innerHTML = '<a href="#" onclick="PhDOE_loginPage.externalCredentials(\'google\', \''+googleInfo.user.name+'\', \''+googleInfo.user.id+'\',  \''+googleInfo.user.email+'\')">Use this credentials</a>';
-                                            }
-                                        }
-                                    }
-                                }
-                                ]
-                            }]
+                            }
                         })
                     ],
                     items : [{
@@ -699,7 +772,7 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                         url         : './do/login',
                         bodyStyle   : 'padding:5px 5px 0',
                         border      : false,
-                        height      : 140,
+                        height      : 170,
                         width       : 350,
                         labelWidth  : 110,
                         defaults    : { width : 217 },
@@ -749,9 +822,9 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                                 }
                             }
                         }, {
-                            fieldLabel      : 'VCS login',
+                            fieldLabel      : 'Login',
                             name            : 'vcsLogin',
-                            value           : ( Ext.util.Cookies.get("loginApp") ) ? Ext.util.Cookies.get("loginApp") : 'anonymous',
+                            value           : ( loginApp ) ? loginApp : 'anonymous',
                             id              : 'login-form-vcsLogin',
                             enableKeyEvents : true,
                             listeners       : {
@@ -799,7 +872,7 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                                 }
                             }
                         }, {
-                            fieldLabel      : 'VCS password',
+                            fieldLabel      : 'Password',
                             name            : 'vcsPassword',
                             id              : 'login-form-vcsPasswd',
                             inputType       : 'password',
@@ -827,7 +900,13 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                                     }
                                 }
                             }
-                        }, {
+                        },{
+                            xtype           : 'label',
+                            fieldLabel      : 'Auth. Service',
+                            id              : 'login-form-auth',
+                            name            : 'authService',
+                            html            : '<img src="themes/img/auth_php.png" style="vertical-align: middle" /> <b>Php.net</b>'
+                        },{
                             xtype           : 'iconcombo',
                             width           : 235,
                             fieldLabel      : 'Language module',
@@ -868,6 +947,14 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                     }],
                     buttonAlign : 'left',
                     buttons     : [{
+                        text     : 'Help',
+                        iconCls  : 'iconHelp2',
+                        tabIndex : -1,
+                        tooltip  :'A little reference to this application',
+                        handler  : function() {
+                            window.open("https://wiki.php.net/doc/editor", "_blank");
+                        }
+                    },{
                         text     : 'Request an account',
                         iconCls  : 'iconHelp',
                         tabIndex : -1,
@@ -879,7 +966,7 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                             }
                         }
                     }, '->', {
-                        text      :  ( Ext.util.Cookies.get("loginApp") && Ext.util.Cookies.get("loginApp") != 'anonymous' ) ? 'Login' : 'Anonymous login',
+                        text      :  ( loginApp && loginApp != 'anonymous' ) ? 'Login' : 'Anonymous login',
                         id        : 'login-btn',
                         disabled  : false,
                         listeners : {
@@ -935,15 +1022,15 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
                             
                             Ext.getCmp('login-form-vcsPasswd').enable();
                             Ext.getCmp('login-form-vcsPasswd').setValue('');
+                            Ext.getCmp('login-form-auth').setText('<img src="themes/img/auth_php.png" style="vertical-align: middle" /> <b>Php.net</b>', false);
                             
                             this.authService = 'VCS';
                             this.authServiceID = '';
                             
-                            if( Ext.util.Cookies.get("loginApp") ) {
-                                Ext.getCmp('login-form-vcsLogin').setValue(Ext.util.Cookies.get("loginApp"));
+                            if( loginApp ) {
+                                Ext.getCmp('login-form-vcsLogin').setValue(loginApp);
                                 Ext.getCmp('login-btn').setText('Login');
                                 Ext.getCmp('login-form-email').setValue(Ext.util.Cookies.get("email"));
-                                
                                 
                             } else {
                                 Ext.getCmp('login-form-vcsLogin').setValue('anonymous');
@@ -957,11 +1044,30 @@ Ext.reg('windowdrawer', Ext.ux.plugins.WindowDrawer);var PhDOE_loginPage = funct
             }
 
             win.show();
+            
+            //
 
             // Remove the global loading message
             Ext.get('loading').remove();
             Ext.fly('loading-mask').fadeOut({ remove : true });
-
+            
+            // We load flickR
+            this.storeFlickr.load({
+                
+                callback: function() {
+                    
+                    // We put the elephpants !
+                    Ext.each(this.data.items, function(item) {
+                        
+                        Ext.DomHelper.append('elephpants-images', {
+                            tag: 'a',
+                            href: item.data.link, 
+                            html: '<img src="'+ item.data.img +'" />', 
+                            target: '_blank'
+                        });
+                    });
+                }
+            });
         }
     };
 }();

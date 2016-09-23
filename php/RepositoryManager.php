@@ -60,7 +60,8 @@ class RepositoryManager
         27 => Array('code' => 'sl',    'iconCls' => 'flags flag-sl',    'name' => 'Slovenian'),
         28 => Array('code' => 'es',    'iconCls' => 'flags flag-es',    'name' => 'Spanish'),
         29 => Array('code' => 'sv',    'iconCls' => 'flags flag-se',    'name' => 'Swedish'),
-        30 => Array('code' => 'tr',    'iconCls' => 'flags flag-tr',    'name' => 'Turkish')
+        30 => Array('code' => 'tr',    'iconCls' => 'flags flag-tr',    'name' => 'Turkish'),
+        31 => Array('code' => 'uk',    'iconCls' => 'flags flag-uk',    'name' => 'Ukrainian')
     );
 
     public $existingLanguage = array();
@@ -1714,6 +1715,7 @@ class RepositoryManager
             || $name == 'missing-ids.xml'
             || $name == 'license.xml'
             || $name == 'versions.xml'
+            || $name == 'book.developer.xml'
         ) {
         	$return .= " FALSE !\n\n\n";
         	if( $toDisplay ) echo $return;

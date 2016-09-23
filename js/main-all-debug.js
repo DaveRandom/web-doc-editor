@@ -5446,8 +5446,7 @@ Ext.override(Ext.form.Field, {
         this.initValue();
     }
       
-});
-/*!
+});/*!
  * Ext JS Library 3.2.0
  * Copyright(c) 2006-2010 Ext JS, Inc.
  * licensing@extjs.com
@@ -11191,11 +11190,11 @@ ui.task.GetFileTask = function(config)
             // If we ask for the original content, we don't display this message
             if( o.fileModified && !readOriginal  && ( PhDOE.user.userID !== fileModifiedInfo.userID )) {
 
-                // If the current user is an authenticate user with karma & the user who have modified this file dont have karma, we allow to modify this file
-                if( !fileModifiedInfo.haveKarma  && PhDOE.user.haveKarma && fileModifiedInfo.fromModule === 'workInProgress' ) {
+                // If the current user is an authenticate user with karma, we allow to modify this file
+                if( PhDOE.user.haveKarma && fileModifiedInfo.fromModule === 'workInProgress' ) {
                     Ext.MessageBox.show({
                         title   : _('Information'),
-                        msg     : String.format(_('File modified by {0} (anonymous user) but you are an authenticated user, so you can modify it.'), fileModifiedInfo.user),
+                        msg     : String.format(_('File modified by {0} but you are an authenticated user, so you can modify it.'), fileModifiedInfo.user),
                         buttons : Ext.MessageBox.OK,
                         icon    : Ext.MessageBox.INFO
                     });
@@ -12654,6 +12653,7 @@ ui.cmp.About = Ext.extend(Ext.Window,
                     title : _('Help and support'),
                     bodyStyle : 'padding:15px',
                     html  : '<div id="phd-oe-support"><ul>' +
+                                '<li>' + _('Getting started with this editor:') + '<a href="https://wiki.php.net/doc/editor/" target="_blank">https://wiki.php.net/doc/editor/</a></li>' +
                                 '<li>' + _('Mailing list:') + '<a href="mailto:phpdoc@lists.php.net">phpdoc@lists.php.net</a></li>' +
                                 '<li>' + _('IRC:') + '<a href="irc://irc.efnet.org/#php.doc">EFnet: #php.doc</a></li>' +
                             '</ul></div>'
@@ -14863,7 +14863,8 @@ ui.cmp._EditorConf.uiLangStore = new Ext.data.SimpleStore({
         ['fr',      _('French')],
         ['ru',      _('Russian')],
         ['es',      _('Spanish')],
-	    ['ar',      _('Arabic')]
+        ['ar',      _('Arabic')],
+        ['uk',      _('Ukrainian')]
     ]
 });
 
@@ -18691,7 +18692,7 @@ Ext.extend(ui.cmp.MainMenu, Ext.menu.Menu,
                             iconCls    : 'iconBugs',
                             closable   : true,
                             layout     : 'fit',
-                            items: [ new Ext.ux.IFrameComponent({ id: 'frame-tab-report-bug', url: 'http://bugs.php.net/' }) ]
+                            items: [ new Ext.ux.IFrameComponent({ id: 'frame-tab-report-bug', url: 'https://bugs.php.net/' }) ]
                         });
 
                         Ext.getCmp('main-panel').setActiveTab('tab-report-bug');
@@ -18702,8 +18703,8 @@ Ext.extend(ui.cmp.MainMenu, Ext.menu.Menu,
                 }
             }, {
                 id      : 'tab-documentation-btn',
-                text    : _('Documentation'),
-                iconCls : 'iconBook',
+                text    : _('Help'),
+                iconCls : 'iconInfo',
                 handler : function()
                 {
                     if (!Ext.getCmp('main-panel').findById('tab-documentation')) {
@@ -18711,8 +18712,8 @@ Ext.extend(ui.cmp.MainMenu, Ext.menu.Menu,
                         Ext.getCmp('main-panel').add({
                             id         : 'tab-documentation',
                             xtype      : 'panel',
-                            title      : _('Documentation'),
-                            iconCls    : 'iconBook',
+                            title      : _('Help'),
+                            iconCls    : 'iconInfo',
                             closable   : true,
                             layout     : 'fit',
                             items: [ new Ext.ux.IFrameComponent({ id: 'frame-tab-documentation', url: 'https://wiki.php.net/doc/editor/' }) ]
@@ -21665,9 +21666,19 @@ ui.cmp._PortletInfo.typeRenderer = function(value, md, record)
             img = '';
             
             if( authService == 'google' ) {
-                img = '<img src="themes/img/google.png" style="vertical-align: middle;"> ';
+                img = '<img src="themes/img/auth_google.png" style="vertical-align: middle;"> ';
             } else if( authService == 'facebook' ) {
-                img = '<img src="themes/img/icon_facebook.png" style="vertical-align: middle;"> ';
+                img = '<img src="themes/img/auth_facebook.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'github' ) {
+                img = '<img src="themes/img/auth_github.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'stackoverflow' ) {
+                img = '<img src="themes/img/auth_stackoverflow.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'linkedin' ) {
+                img = '<img src="themes/img/auth_linkedin.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'instagram' ) {
+                img = '<img src="themes/img/auth_instagram.png" style="vertical-align: middle;"> ';
+            } else if( authService == 'twitter' ) {
+                img = '<img src="themes/img/auth_twitter.png" style="vertical-align: middle;"> ';
             }
             
             return img + String.format(
@@ -21758,7 +21769,12 @@ ui.cmp._PortletInfo.grid = Ext.extend(Ext.grid.GridPanel,
     autoHeight       : true,
     store            : ui.cmp._PortletInfo.store,
     columns          : ui.cmp._PortletInfo.gridColumns,
-
+    listeners        : {
+        afterrender: function(p) {
+            p.ownerCt.setHeight(p.height + 60);
+            p.ownerCt.doLayout();
+        }
+    },
     initComponent : function()
     {
         Ext.apply(this, {
@@ -22863,6 +22879,12 @@ ui.cmp._PortletTranslator.grid = Ext.extend(Ext.grid.GridPanel,
     sm               : new Ext.grid.RowSelectionModel({singleSelect:true}),
     lang             : this.lang,
     EmailPrompt      : new ui.cmp.EmailPrompt(),
+    listeners        : {
+        afterrender: function(p) {
+            p.ownerCt.setHeight(p.height + 200);
+            p.ownerCt.doLayout();
+        }
+    },
                                  
     onRowDblClick : function(grid, rowIndex)
     {
@@ -26498,9 +26520,20 @@ var PhDOE = function()
                                         } else if( PhDOE.user.authService == 'VCS' ) {
                                             libelContent = '<img src="themes/img/icon_php.png" style="vertical-align:middle"> '+PhDOE.user.login;
                                         } else if( PhDOE.user.authService == 'google' ) {
-                                            libelContent = '<img src="themes/img/google.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                            libelContent = '<img src="themes/img/auth_google.png" style="vertical-align:middle"> '+PhDOE.user.login;
                                         } else if( PhDOE.user.authService == 'facebook' ) {
-                                            libelContent = '<img src="themes/img/icon_facebook.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                            libelContent = '<img src="themes/img/auth_facebook.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                        }
+                                        else if( PhDOE.user.authService == 'github' ) {
+                                            libelContent = '<img src="themes/img/auth_github.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                        } else if( PhDOE.user.authService == 'stackoverflow' ) {
+                                            libelContent = '<img src="themes/img/auth_stackoverflow.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                        } else if( PhDOE.user.authService == 'linkedin' ) {
+                                            libelContent = '<img src="themes/img/auth_linkedin.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                        } else if( PhDOE.user.authService == 'instagram' ) {
+                                            libelContent = '<img src="themes/img/auth_instagram.png" style="vertical-align:middle"> '+PhDOE.user.login;
+                                        } else if( PhDOE.user.authService == 'twitter' ) {
+                                            libelContent = '<img src="themes/img/auth_twitter.png" style="vertical-align:middle"> '+PhDOE.user.login;
                                         }
                                         loginLibelEl.dom.innerHTML = libelContent;
                                         

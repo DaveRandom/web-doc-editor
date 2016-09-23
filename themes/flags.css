@@ -3,9 +3,14 @@
 *
 */
 
-.x-form-field-wrap .flags, .mainMenuLang {
+.mainMenuLang {
     top: 5px !important;
     left: 1px !important;
+}
+
+.x-form-field-wrap .flags {
+    top: 6px !important;
+    left: 5px !important;
 }
 
 .flags {
@@ -240,7 +245,7 @@
 .flag-tv { background-position: -17px -672px !important; } 
 .flag-tw { background-position: -17px -684px !important; } 
 .flag-tz { background-position: -17px -696px !important; } 
-.flag-ua { background-position: -17px -708px !important; } 
+.flag-uk { background-position: -17px -708px !important; }  
 .flag-ug { background-position: -17px -720px !important; } 
 .flag-um { background-position: -17px -732px !important; } 
 .flag-us { background-position: -17px -744px !important; } 
